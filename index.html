@@ -7,65 +7,15 @@
 	<title>4K | Interactive map</title>
 
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/dark-hive/jquery.ui.all.css">
-	<link rel="stylesheet" type="text/css" href="css/jquery.ui.stars.css">
+	<!--link rel="stylesheet" type="text/css" href="css/jquery.ui.stars.css">
 	<link rel="stylesheet" type="text/css" href="css/scrollbar.css">
 	<link rel="stylesheet" type="text/css" href="css/tipsy.css">
 	<link rel="stylesheet" type="text/css" href="css/fileuploader.css">
 	<link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.3/js/dojo/dijit/themes/tundra/tundra.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-
-	<script type="text/javascript" src="js/libs/json2.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css"-->
+	<link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.3/js/dojo/dijit/themes/tundra/tundra.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<script type="text/javascript" src="js/libs/jquery-1.5.js"></script>
-	<script type="text/javascript" src="js/libs/jquery.path.js"></script>
-	<script type="text/javascript" src="js/libs/jquery.scroll.js"></script>
-	<script type="text/javascript" src="js/libs/jquery-ui-1.8.13.min.js"></script>
-	<script type="text/javascript" src="js/libs/jquery.easing.js"></script>
-	<script type="text/javascript" src="js/libs/jquery.ui.stars.js"></script>
-	<script type="text/javascript" src="js/libs/jquery.tipsy.js"></script>
-	<script type="text/javascript" src="js/libs/fileuploader.js"></script>
-	<script type="text/javascript" src="js/libs/underscore-1.1.6.js"></script>
-	<script type="text/javascript" src="js/libs/backbone.js"></script>
-
-	<script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.4"></script>
-
-	<script type="text/javascript" src="js/Auth.js"></script>
-	<script type="text/javascript" src="js/Alert.js"></script>
-
-	<script type="text/javascript" src="js/Backend.js"></script>
-	<script type="text/javascript" src="js/backend/GroupUser.js"></script>
-	<script type="text/javascript" src="js/backend/Group.js"></script>
-	<script type="text/javascript" src="js/backend/User.js"></script>
-	<script type="text/javascript" src="js/backend/Userdata.js"></script>
-	<script type="text/javascript" src="js/backend/Field.js"></script>
-	<script type="text/javascript" src="js/backend/MyStuff.js"></script>
-	
-	<script type="text/javascript" src="js/Userdata.js"></script>
-	<script type="text/javascript" src="js/Panel.js"></script>
-	<script type="text/javascript" src="js/Map.js"></script>
-	<script type="text/javascript" src="js/Frontend.js"></script>
-
-	<script type="text/javascript">	
-		$(document).ready(function(){
-			dojo.addOnLoad(function(){
-				
-				var b = '/map' ;
-				Backbone.emulateJSON = true ;
-				Backbone.emulateHTTP = true;
-
-				window.frontendRouter = new FrontendRouter;
-				Backbone.history.start();
-
-				window.onerror = function(msg, url, linenumber){
-					console.error('error!') ;
-					console.error(msg) ;
-					console.error(url + ' at ' + linenumber) ;
-
-					return false ;
-				}
-
-			});
-		}) ;
-	</script>
 <body>
 	<div id="container">
 
@@ -119,13 +69,13 @@
 				<div id="tabs">
 					<a href="#" class="statsButton selected">Stats</a>
 					<a href="#" class="userdataButton">User data</a>
-					
+
 					<div id="followButton">
 						<div class="buttonLeft"></div>
 						<div class="buttonCenter">Follow</div>
 						<div class="buttonRight"></div>
 					</div>
-					
+
 					<div id="selector"></div>
 				</div>
 				<div id="stats" class="scrollable">
@@ -147,18 +97,18 @@
 						</div>
 
 						<div title="The ability to read and write, as measured by the percentage of the adult population (over age 15) who can read and write their own names and a simple statement. A higher level of competence is required for functional literacy." id="Adult_Lite" class="stat type-percentage odd">
-							<h3>Adult Literacy</h3>														
+							<h3>Adult Literacy</h3>
 							<p class="number"></p>
 							<div class="progress-bar"></div>
 						</div>
 
 						<div title="A higher value represents greater human development in this country. In Christian usage not only a techno-economic process but primarily a process by which both persons and societies come to realize the full potential of human life in a context of social justice with an emphasis on self-reliance (Montreux Conference Report), including a more equal distribution of wealth, including gross national product, in a just and human order. In this field, there are over 220 Christian organizations significant at the national or wider levels." id="HDI" class="stat type-index even">
 							<h3>Human Development Index</h3>
-							<p class="number"></p>	
+							<p class="number"></p>
 						</div>
 
 						<div title="Amount of suffering experienced by the people of this country. A lower score indicates greater suffering." id="HSI" class="stat type-index odd">
-							<h3>Human Suffering Index</h3>													
+							<h3>Human Suffering Index</h3>
 							<p class="number"></p>
 						</div>
 
@@ -177,7 +127,7 @@
 						<div title="Number of Christian workers per million people in this country." id="Christian_" class="stat type-rate even">
 							<h3>Christian Workers</h3>
 							<p class="rate">&nbsp;per 1 million</p>
-							<p class="number"></p>		
+							<p class="number"></p>
 						</div>
 
 						<div title="Percentage of persons in this province who have had adequate opportunity, or opportunities, to hear the gospel and to respond to it, whether they respond positively or negatively by AD 2005." id="Evangelize" class="stat type-percentage odd">
@@ -260,7 +210,7 @@
 
 							<div class="icon" style="background-image:url(groups/icon/<%=group_id%>);"></div>
 							<a target="_blank" href="<%= url %>" class="<% if(type == 'url') { %>url<% } else { %>file<%}%>"><% if(type == 'url') { %>Visit website <% } else { %>Download<% } %></a>
-							
+
 						</div>
 					</script>
 
@@ -275,7 +225,7 @@
 							<div title="File has to be either doc, docx, kml, kmz or pdf." class="userdataAddTab" id="userDataAddTabsFile">
 								<div id="userdataFile"></div>
 							</div>
-							
+
 							<div class="userdataAddTab" style="display:none;" id="userDataAddTabsLink">
 								<label for="link">Link</label>
 								<input type="text" id="link" />
@@ -286,10 +236,10 @@
 							<input type="hidden" id="fileName" />
 							<input type="hidden" id="fileExt" />
 							<input type="hidden" id="fileSize" />
-						
+
 							<label for="name">Name</label>
 							<input type="text" id="name" />
-						
+
 							<label for="category">Category</label>
 							<select id="category">
 								<option value="General">General</option>
@@ -301,14 +251,14 @@
 								<option value="Media">Media</option>
 								<option value="Celebration">Celebration</option>
 							</select>
-							
+
 							<label for="security">Security</label>
 							<select id="security">
 								<option value="public">This is public</option>
 								<option value="private">This is only for registered users</option>
 								<option value="group">This is only for my group</option>
 							</select>
-							
+
 							<br>
 							<button class="userdataAdd">add</button>
 							<div class="clear"></div>
@@ -317,7 +267,7 @@
 				</div>
 			</div>
 			<div id="map" class="tundra">
-				
+
 				<ul id="availableLayers">
 					<script type="text/template" id="layers-available-layer-template">
 						<li id="<%= layer_id %>-<%= sublayer_id %>">
@@ -326,10 +276,10 @@
 						</li>
 					</script>
 				</ul>
-				
+
 				<div id="layers">
 					<button class="showAvailableLayersButton">Add layer</button>
-				
+
 					<ul id="visibleLayers">
 						<script type="text/template" id="layers-visible-layer-template">
 							<li id="<%= layer_id %>-<%= sublayer_id %>" style="margin-left:-260;">
@@ -339,17 +289,17 @@
 						</script>
 						<li id="baseLayer">
 							<p>
-								<a href="#" class="switchBasemap" id="layer0">Satellite</a> | 
-								<a href="#" class="switchBasemap" id="layer1">Terrain</a> | 
+								<a href="#" class="switchBasemap" id="layer0">Satellite</a> |
+								<a href="#" class="switchBasemap" id="layer1">Terrain</a> |
 								<a href="#" class="switchBasemap" id="layer2">Street</a>
 							</p>
 						</li>
 					</ul>
 				</div>
-				
+
 				<div id="reportContainer">
 					<a id="reportButton" class="reportButton" href="#">Report</a>
-					
+
 					<form id="report">
 						<h2>Report</h2>
 						<p>Please let us know of any abuse or bugs you find on the map.</p>
@@ -363,10 +313,10 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div id="auth-wrapper">
 			<div class="mapButton"></div>
-			
+
 			<div id="auth">
 				<div class="title">
 					<h2>Login</h2>
@@ -384,51 +334,51 @@
 				<form id="register" method="POST">
 					<label for="username">Username</label>
 					<input type="text" id="username" />
-					
+
 					<label for="email">Email</label>
 					<input type="email" id="email" />
-					
+
 					<label for="organization">Organization</label>
 					<input type="text" id="organization" />
-					
+
 					<label for="password">Password</label>
 					<input type="password" id="password" />
-					
+
 					<label for="password2">Repeat password</label>
 					<input type="password" id="password2" />
-					
+
 					<p><a class="loginButton" href="#">Login</a> | <a class="lostpasswordButton" href="#">Lost password</a></p>
 					<button class="white">Register</button>
 				</form>
-				
+
 				<form id="lostpassword" method="POST">
 					<p>That's okay, it happens to the best of us. Enter your email here and we'll help you getting a new one.</p><br><br><br>
 					<label for="email">Email</label>
 					<input type="email" id="email" />
-				
+
 					<p><a class="loginButton" href="#">Login</a> | <a class="registerButton" href="#">Sign up</a></p>
 					<button class="white">Email me!</button>
 				</form>
-				
+
 				<form id="resetpassword" method="POST">
 					<p>Enter your new password here.</p><br><br>
-					
+
 					<input type="hidden" name="username" value="" id="username" />
 					<input type="hidden" name="ttl" value="" id="ttl" />
 					<input type="hidden" name="otp" value="" id="otp" />
-					
+
 					<label for="password">Password</label>
 					<input type="password" name="password" id="password" />
-					
+
 					<label for="password2">Comfirm</label>
 					<input type="password" name="password2" id="password2" />
-				
+
 					<p><a class="loginButton" href="#">Login</a> | <a class="registerButton" href="#">Sign up</a></p>
 					<button class="white">Reset!</button>
 				</form>
 			</div>
 		</div>
-		
+
 		<div id="backend-wrapper">
 			<div id="nav">
 				<ul>
@@ -438,7 +388,7 @@
 					<li><a href="#" class="myFilesButton inGroupRights">My data</a></li>
 					<li><a href="#" class="myProfileButton">My profile</a></li>
 				</ul>
-				
+
 				<ul class="adminRights">
 					<h3>Admin</h3>
 					<li><a href="#" class="groupsButton">Groups</a></li>
@@ -446,13 +396,13 @@
 					<li><a href="#" class="usersButton">Users</a></li>
 					<li><a href="#" class="fieldsButton">Fields</a></li>
 				</ul>
-				
+
 				<ul class="bottom">
 					<li><a href="#" class="mapButton">Back to map</a></li>
 					<li><a href="users/logout">Log out</a></li>
 				</ul>
 			</div>
-			
+
 			<div id="mystuff-wrapper">
 				<div id="myGroup" class="first-view">
 			        <div class="bar">
@@ -462,7 +412,7 @@
 			        <div class="content">
 			        	<p class="notice"></p>
 			        	<ul></ul>
-			
+
 			    		<script type="text/template" id="template-mygroup-user-list-item">
 		        			<li>
 		        				<a id="<%= id %>" class="changeUserMyGroupButton" href="#">
@@ -471,10 +421,10 @@
 		        				</a>
 		        			</li>
 		        		</script>
-		    
+
 			        </div>
 				</div>
-				
+
 				<div id="myGroupUserAdd" style="height:400px" class="second-view">
 			        <div class="bar">
 			        	<h2>Add user to group</h2>
@@ -484,9 +434,9 @@
 			        		<input type="search" id="searchMyGroupUser" name="name" style="margin-bottom:0px;" />
 			        	</form>
 			        	<p class="notice"></p>
-			        	
+
 			        	<ul style="top:29px;"></ul>
-			
+
 			    		<script type="text/template" id="template-user-add-mygroup-list-item">
 		        			<li>
 		        				<a href="#" class="no-arrow">
@@ -497,7 +447,7 @@
 		        		</script>
 			        </div>
 				</div>
-				
+
 				<div id="changeUserMyGroup" style="height:200px" class="second-view">
 			        <div class="bar">
 			        	<h2 class="truncate">Change rights for </h2>
@@ -506,7 +456,7 @@
 			        	<form id="changeUserMyGroupForm">
 			        		<input type="hidden" id="userId" />
 			        		<input type="hidden" id="groupUserId" />
-			        		
+
 			        		<label for="userLevel">User rights</label>
 			        		<select id="userLevel">
 			        			<option value="0">Normal</option>
@@ -519,7 +469,7 @@
 			        	<button class="deleteUserMyGroup grey" style="margin-left:0;">remove from group</button>
 			        </div>
 				</div>
-				
+
 				<div id="profile" class="first-view">
 					<div class="bar">
 						<h2 class="truncate"></h2>
@@ -534,14 +484,14 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div id="myGroupUserdata" class="first-view">
 					<div class="bar">
 						<h2>My group files</h2>
 					</div>
 					<div class="content">
 						<ul></ul>
-						
+
 						<script type="text/template" id="template-userdata-list-item">
 							<li>
 								<a href="#" id="<%= index %>" class="editMyUserdataButton group-<%=group_id%>">
@@ -550,17 +500,17 @@
 								</a>
 							</li>
 						</script>
-						
+
 					</div>
 				</div>
-				
+
 				<div id="myUserdata" class="first-view">
 					<div class="bar">
 						<h2>My files</h2>
 					</div>
 					<div class="content">
 						<ul></ul>
-						
+
 						<script type="text/template" id="template-userdata-list-item">
 							<li>
 								<a href="#" id="<%= index %>" class="editMyUserdataButton group-<%=group_id%>">
@@ -569,10 +519,10 @@
 								</a>
 							</li>
 						</script>
-						
+
 					</div>
 				</div>
-				
+
 				<div id="editMyUserdatum" class="second-view">
 					<div class="bar">
 						<h2 class="truncate"></h2>
@@ -590,8 +540,8 @@
 							<strong>File name:</strong><p id="UserdatumFileName"></p>
 							<strong>URL:</strong><p id="UserdatumURL"></p>
 						</div>
-						
-						<form class="groupAdminRights" id="editUserdatumForm">							
+
+						<form class="groupAdminRights" id="editUserdatumForm">
 							<label for="security">Security</label>
 							<select id="security">
 								<option value="public">This is public</option>
@@ -606,11 +556,11 @@
 						<button class="deleteMyUserdatum grey">delete</button>
 					</div>
 				</div>
-				
+
 			</div>
-	
+
 			<div id="groups-wrapper">
-				
+
 				<div id="groups" class="first-view">
 			        <div class="bar">
 			        	<h2 style="width:200px;">Groups</h2>
@@ -618,7 +568,7 @@
 			        </div>
 			        <div class="content">
 			        	<p class="notice"></p>
-			        	
+
 			        	<ul>
 			        	</ul>
 			    		<script type="text/template" id="template-group-list-item">
@@ -629,10 +579,10 @@
 								</a>
 							</li>
 		        		</script>
-		    
+
 			        </div>
 				</div>
-			
+
 				<div id="group" class="second-view">
 			        <div class="bar">
 			        	<h2 class="truncate" style="width:160px"></h2>
@@ -641,22 +591,22 @@
 			        <div class="content">
 			        	<p class="notice"></p>
 			        	<ul></ul>
-			
+
 			    		<script type="text/template" id="template-group-user-list-item">
 		        			<li>
 		        				<a id="<%= id %>" class="changeUserGroupButton" href="#">
-		        					<%= name %> 
+		        					<%= name %>
 		        					<% if(level == 1) { %> <span class="description">Admin</span> <% } %>
 		        				</a>
 		        			</li>
 		        		</script>
-		    
+
 			        </div>
 			        <div class="bar bottom">
 						<button class="deleteGroupButton grey">delete</button>
 			        </div>
 				</div>
-			
+
 				<div id="groupUserAdd" style="height:400px" class="third-view">
 			        <div class="bar">
 			        	<h2>Add user to group</h2>
@@ -666,9 +616,9 @@
 			        		<input type="search" id="searchGroupUser" name="name" style="margin-bottom:0px;" />
 			        	</form>
 			        	<p class="notice"></p>
-			        	
-			        	<ul style="top:29px;"></ul>			
-			
+
+			        	<ul style="top:29px;"></ul>
+
 			    		<script type="text/template" id="template-user-add-list-item">
 		        			<li>
 		        				<a href="#" class="no-arrow">
@@ -679,7 +629,7 @@
 		        		</script>
 			        </div>
 				</div>
-			
+
 				<div id="changeUserGroup" style="height:200px" class="third-view">
 			        <div class="bar">
 			        	<h2 class="truncate">Change rights for </h2>
@@ -688,7 +638,7 @@
 			        	<form id="changeUserGroupForm">
 			        		<input type="hidden" id="userId" />
 			        		<input type="hidden" id="groupUserId" />
-			        		
+
 			        		<label for="userLevel">User rights</label>
 			        		<select id="userLevel">
 			        			<option value="0">Normal</option>
@@ -701,7 +651,7 @@
 			        	<button class="deleteUserMyGroup grey" style="margin-left:0;">remove from group</button>
 			        </div>
 				</div>
-			
+
 				<div id="groupAdd" style="height:300px" class="second-view">
 			        <div class="bar">
 			        	<h2>Add group</h2>
@@ -710,7 +660,7 @@
 			        	<form id="groupAddForm">
 			        		<label for="groupName">Group name</label>
 			        		<input type="text" id="groupName" name="name" />
-				
+
 							<label>Upload group icon</label>
 							<div id="groupIconFile"></div>
 
@@ -722,7 +672,7 @@
 			        	<button class="groupAdd">add</button>
 			        </div>
 				</div>
-				
+
 				<div id="groupEdit" style="height:300px" class="third-view">
 			        <div class="bar">
 			        	<h2 class="truncate"></h2>
@@ -730,10 +680,10 @@
 			        <div class="content">
 			        	<form id="groupEditForm">
 							<input type="hidden" id="id" name="id" />
-				
+
 			        		<label for="groupName">Group name</label>
 			        		<input type="text" id="groupName" name="name" />
-				
+
 							<label>Upload group icon</label>
 							<div id="newGroupIconFile"></div>
 
@@ -747,7 +697,7 @@
 			        </div>
 				</div>
 			</div>
-		
+
 			<div id="userdata-wrapper">
 				<div id="userdata" class="first-view">
 					<div class="bar">
@@ -755,7 +705,7 @@
 					</div>
 					<div class="content">
 						<ul></ul>
-						
+
 						<script type="text/template" id="template-userdata-list-item">
 							<li>
 								<a href="#" id="<%= index %>" class="editUserdataButton group-<%=group_id%>">
@@ -772,10 +722,10 @@
 								<p class="arrow" style="display:none;">&#9668;</p>
 							</div>
 						</script>
-						
+
 					</div>
 				</div>
-				
+
 				<div id="editUserdatum" class="second-view">
 					<div class="bar">
 						<h2 class="truncate"></h2>
@@ -793,26 +743,26 @@
 							<strong>File name:</strong><p id="UserdatumFileName"></p>
 							<strong>URL:</strong><p id="UserdatumURL"></p>
 						</div>
-						
-						<form id="editUserdatumForm">							
+
+						<form id="editUserdatumForm">
 							<label for="security">Security</label>
 							<select id="security">
 								<option value="public">This is public</option>
 								<option value="private">This is only for registered users</option>
 								<option value="group">This is only for my group</option>
 							</select>
-							
+
 						</form>
 					</div>
 					<div class="bar bottom">
 						<button class="editUserdatum">save</button>
 						<button class="deleteUserdatum grey">delete</button>
 					</div>
-					
+
 				</div>
-				
+
 			</div>
-		
+
 			<div id="users-wrapper">
 				<div id="users" class="first-view">
 					<div class="bar">
@@ -820,7 +770,7 @@
 					</div>
 					<div class="content">
 						<ul></ul>
-						
+
 						<script type="text/template" id="template-user-list-item">
 							<li>
 								<a href="#" id="<%= index %>" class="viewUserButton">
@@ -829,10 +779,10 @@
 								</a>
 							</li>
 						</script>
-						
+
 					</div>
 				</div>
-				
+
 				<div id="user" class="second-view">
 					<div class="bar">
 						<h2 class="truncate"></h2>
@@ -846,7 +796,7 @@
 							<strong>Level:</strong><p id="UserViewLevel"></p>
 							<strong>Member since:</strong><p id="UserViewCreated"></p>
 						</div>
-						
+
 						<form class="userEditForm">
 			        		<label for="userLevel">User rights</label>
 			        		<select id="userLevel">
@@ -860,10 +810,10 @@
 						<button class="userEdit">save</button>
 					</div>
 				</div>
-				
+
 				<script type="text/javascript">$(document).ready(function(){$('#user #userLevel').change(function(){if($(this).val()==1){$('#superman').fadeIn();$('#superman').css({right:window.innerWidth+450,top:window.innerHeight+338});$('#superman').animate({right:-450,top:-338},1500,function(){$('#superman').hide();});$('#superman').click(function(){$('#superman').stop();});$('#superman').dblclick(function(){$('#superman').fadeOut();});}});});</script><div id="superman" style="width:450px;display:none;height:338;position:absolute;z-index:1000;background-image:url(img/superman.png);"></div>
 			</div>
-				
+
 			<div id="fields-wrapper">
 						<div id="fields" class="first-view">
 							<div class="bar">
@@ -877,10 +827,10 @@
 										<a href="#" id="<%= index %>" class="editFieldButton"><%= name %></a>
 									</li>
 								</script>
-								
+
 							</div>
 						</div>
-						
+
 						<div id="editField" class="second-view">
 							<div class="bar">
 								<h2>Add field</h2>
@@ -889,13 +839,13 @@
 								<form id="editFieldForm">
 									<label for="name">Name</label>
 									<input type="text" id="name" />
-									
+
 									<label for="fieldName">GIS Field name</label>
 									<input type="text" id="fieldName" />
-									
+
 									<label for="description">Description</label>
 									<textarea id="description"></textarea>
-									
+
 									<label for="type">Type</label>
 									<select id="type">
 										<option value="number">Number</option>
@@ -903,7 +853,7 @@
 										<option value="rate">Rate</option>
 										<option value="index">Index</option>
 									</select>
-									
+
 									<label for="rate">Rate</label>
 									<input type="text" id="rate" />
 								</form>
@@ -918,5 +868,59 @@
 			</div>
 		</div>
 	</div>
+
+
+	<!--script type="text/javascript" src="js/libs/json2.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.path.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.scroll.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-ui-1.8.13.min.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.easing.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.ui.stars.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.tipsy.js"></script>
+	<script type="text/javascript" src="js/libs/fileuploader.js"></script>
+	<script type="text/javascript" src="js/libs/underscore-1.1.6.js"></script>
+	<script type="text/javascript" src="js/libs/backbone.js"></script-->
+
+	<script type="text/javascript" src="js/libs.js"></script>
+	<script type="text/javascript" src="js/libs/arcgis.2.4.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+
+	<!--script type="text/javascript" src="js/Auth.js"></script>
+	<script type="text/javascript" src="js/Alert.js"></script>
+	<script type="text/javascript" src="js/Backend.js"></script>
+	<script type="text/javascript" src="js/backend/GroupUser.js"></script>
+	<script type="text/javascript" src="js/backend/Group.js"></script>
+	<script type="text/javascript" src="js/backend/User.js"></script>
+	<script type="text/javascript" src="js/backend/Userdata.js"></script>
+	<script type="text/javascript" src="js/backend/Field.js"></script>
+	<script type="text/javascript" src="js/backend/MyStuff.js"></script>
+	<script type="text/javascript" src="js/Userdata.js"></script>
+	<script type="text/javascript" src="js/Panel.js"></script>
+	<script type="text/javascript" src="js/Map.js"></script>
+	<script type="text/javascript" src="js/Frontend.js"></script-->
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			dojo.addOnLoad(function(){
+
+				var b = '/map' ;
+				Backbone.emulateJSON = true ;
+				Backbone.emulateHTTP = true;
+
+				window.frontendRouter = new FrontendRouter;
+				Backbone.history.start();
+
+				window.onerror = function(msg, url, linenumber){
+					console.error('error!') ;
+					console.error(msg) ;
+					console.error(url + ' at ' + linenumber) ;
+
+					return false ;
+				}
+
+			});
+		}) ;
+	</script>
+
 </body>
 </html>

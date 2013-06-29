@@ -231,7 +231,7 @@ p.notice {
 	position: absolute;
 	left: -260px;
 	z-index: 150;
-	top: 270px;
+	top: 0;
 }
 
 
@@ -380,7 +380,7 @@ p.notice {
 	position: fixed;
 	background-color: #161616;
 	z-index: 75;
-	
+
 	-webkit-box-shadow: 1px 0px 7px 0px #000000;
 	-moz-box-shadow: 1px 0px 7px 0px #000000;
 	box-shadow: 1px 0px 7px 0px #000000;
@@ -467,7 +467,7 @@ p.notice {
 #panel #tabs a.selected {
 	color: #85e2fa;
 	font-weight: semi-bold;
-	
+
 	/*text-shadow: 0px 0px 5px #ffffff;
 	filter: dropshadow(color=#ffffff, offx=0, offy=0);*/
 }
@@ -890,7 +890,7 @@ p.notice {
 	bottom: 0;
 	right: 0;
 	left: 0;
-	background: #00010a url(../img/auth-bg.png) no-repeat center top;
+	background: #00010a url(../img/auth-bg.jpg) no-repeat center top;
 	z-index: 0;
 	position: absolute;
 }
@@ -1142,17 +1142,17 @@ button.white {
 	font-size: 13px;
 }
 
-#backend-wrapper .content .info strong 
+#backend-wrapper .content .info strong
 {
 	margin-bottom: 10px;
 }
 
 
-#backend-wrapper .content .info p 
+#backend-wrapper .content .info p
 {
 	margin-bottom: 10px;
 	font-weight: bold;
-		
+
 	-webkit-user-select: text;
 	-khtml-user-select: text;
 	-moz-user-select: text;

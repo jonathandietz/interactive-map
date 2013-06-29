@@ -1,0 +1,922 @@
+<!doctype html>
+<html>
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>4K | Interactive map</title>
+
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/dark-hive/jquery.ui.all.css">
+	<link rel="stylesheet" type="text/css" href="css/jquery.ui.stars.css">
+	<link rel="stylesheet" type="text/css" href="css/scrollbar.css">
+	<link rel="stylesheet" type="text/css" href="css/tipsy.css">
+	<link rel="stylesheet" type="text/css" href="css/fileuploader.css">
+	<link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.3/js/dojo/dijit/themes/tundra/tundra.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+
+	<script type="text/javascript" src="js/libs/json2.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-1.5.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.path.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.scroll.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-ui-1.8.13.min.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.easing.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.ui.stars.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.tipsy.js"></script>
+	<script type="text/javascript" src="js/libs/fileuploader.js"></script>
+	<script type="text/javascript" src="js/libs/underscore-1.1.6.js"></script>
+	<script type="text/javascript" src="js/libs/backbone.js"></script>
+
+	<script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.4"></script>
+
+	<script type="text/javascript" src="js/Auth.js"></script>
+	<script type="text/javascript" src="js/Alert.js"></script>
+
+	<script type="text/javascript" src="js/Backend.js"></script>
+	<script type="text/javascript" src="js/backend/GroupUser.js"></script>
+	<script type="text/javascript" src="js/backend/Group.js"></script>
+	<script type="text/javascript" src="js/backend/User.js"></script>
+	<script type="text/javascript" src="js/backend/Userdata.js"></script>
+	<script type="text/javascript" src="js/backend/Field.js"></script>
+	<script type="text/javascript" src="js/backend/MyStuff.js"></script>
+	
+	<script type="text/javascript" src="js/Userdata.js"></script>
+	<script type="text/javascript" src="js/Panel.js"></script>
+	<script type="text/javascript" src="js/Map.js"></script>
+	<script type="text/javascript" src="js/Frontend.js"></script>
+
+	<script type="text/javascript">	
+		$(document).ready(function(){
+			dojo.addOnLoad(function(){
+				
+				var b = '/map' ;
+				Backbone.emulateJSON = true ;
+				Backbone.emulateHTTP = true;
+
+				window.frontendRouter = new FrontendRouter;
+				Backbone.history.start();
+
+				window.onerror = function(msg, url, linenumber){
+					console.error('error!') ;
+					console.error(msg) ;
+					console.error(url + ' at ' + linenumber) ;
+
+					return false ;
+				}
+
+			});
+		}) ;
+	</script>
+<body>
+	<div id="container">
+
+		<div id="header">
+
+			<div id="menu">
+				<ul>
+					<li class="page_item current_page_item"><a href="http://4kworldmap.com/" title="Info">Info</a></li>
+					<li class="page_item"><a href="http://4kworldmap.com/maps/" title="Maps">Maps</a></li>
+					<li class="page_item"><a href="http://4kworldmap.com/tools/" title="Tools">Tools</a></li>
+					<li class="page_item"><a href="http://4kworldmap.com/training/" title="Tools">Training</a></li>
+				</ul>
+			</div>
+
+			<div id="right">
+				<div id="alert">
+					<div class="ui-state-default icon">
+						<div class="ui-icon ui-icon-info"></div>
+						<div class="ui-icon ui-icon-alert"></div>
+						<div class="ui-icon loader"></div>
+					</div>
+					<p class="msg"></p>
+				</div>
+
+				<input id="search" placeholder="Search" type="search" />
+
+				<div id="accountButton">
+					<div class="buttonLeft"></div>
+						<a class="buttonContent accountButton" href="#"></a>
+						<a class="buttonContent loginButton" href="#">Login</a>
+					<div class="buttonRight"></div>
+				</div>
+
+				<ul id="accountOptions">
+					<li><a class="backendButton" href="#">Admin</a></li>
+					<li style="display:none;"><a class="mapButton" href="#">Map</a></li>
+					<li><a href="users/logout">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="map-wrapper">
+			<div id="panel">
+				<div id="title">
+					<div>
+						<h1>Undefined</h1>
+						<h2>Undefined</h2>
+					</div>
+					<button id="panelCloseButton" href="#"></button>
+				</div>
+				<div id="tabs">
+					<a href="#" class="statsButton selected">Stats</a>
+					<a href="#" class="userdataButton">User data</a>
+					
+					<div id="followButton">
+						<div class="buttonLeft"></div>
+						<div class="buttonCenter">Follow</div>
+						<div class="buttonRight"></div>
+					</div>
+					
+					<div id="selector"></div>
+				</div>
+				<div id="stats" class="scrollable">
+
+						<div title="Number of people per zone, courtesy of United Nations World Population Figures, July 2008" id="Population" class="stat type-number even">
+							<h3>Population</h3>
+							<p class="number"></p>
+						</div>
+
+						<div title="" id="AdultPerce" class="stat type-percentage odd">
+							<h3>Percent adults</h3>
+							<p class="number"></p>
+							<div class="progress-bar"></div>
+						</div>
+
+						<div title="The number of years individuals in this region's population is expected to live, based on statistical probability. This figure is based on a World average of 67.6 years in 2000." id="Life_Expec" class="stat type-number even">
+							<h3>Life Expectancy</h3>
+							<p class="number"></p>
+						</div>
+
+						<div title="The ability to read and write, as measured by the percentage of the adult population (over age 15) who can read and write their own names and a simple statement. A higher level of competence is required for functional literacy." id="Adult_Lite" class="stat type-percentage odd">
+							<h3>Adult Literacy</h3>														
+							<p class="number"></p>
+							<div class="progress-bar"></div>
+						</div>
+
+						<div title="A higher value represents greater human development in this country. In Christian usage not only a techno-economic process but primarily a process by which both persons and societies come to realize the full potential of human life in a context of social justice with an emphasis on self-reliance (Montreux Conference Report), including a more equal distribution of wealth, including gross national product, in a just and human order. In this field, there are over 220 Christian organizations significant at the national or wider levels." id="HDI" class="stat type-index even">
+							<h3>Human Development Index</h3>
+							<p class="number"></p>	
+						</div>
+
+						<div title="Amount of suffering experienced by the people of this country. A lower score indicates greater suffering." id="HSI" class="stat type-index odd">
+							<h3>Human Suffering Index</h3>													
+							<p class="number"></p>
+						</div>
+
+						<div title="Percentage of the country's population with access to safe water." id="Access_Wat" class="stat type-percentage even">
+							<h3>Access to Water</h3>
+							<p class="number"></p>
+							<div class="progress-bar"></div>
+						</div>
+
+						<div title="Rate Probability of dying between birth and exactly five years of age expressed per 1,000 live births." id="Under_5_Mo" class="stat type-rate odd">
+							<h3>Under age 5 mortality</h3>
+							<p class="rate">&nbsp;per 1000</p>
+							<p class="number"></p>
+						</div>
+
+						<div title="Number of Christian workers per million people in this country." id="Christian_" class="stat type-rate even">
+							<h3>Christian Workers</h3>
+							<p class="rate">&nbsp;per 1 million</p>
+							<p class="number"></p>		
+						</div>
+
+						<div title="Percentage of persons in this province who have had adequate opportunity, or opportunities, to hear the gospel and to respond to it, whether they respond positively or negatively by AD 2005." id="Evangelize" class="stat type-percentage odd">
+							<h3>Evangelized</h3>
+							<p class="number"></p>
+							<div class="progress-bar"></div>
+						</div>
+
+						<div title="Great Commission Christians as a percentage of this county's total population. 'Great Commission Christians' are believers in Jesus Christ who are aware of the implications of Christ's Great Commission, who have accepted its personal challenge in their lives and ministries, and who are seeking to influence the Body of Christ to implement it." id="GCC" class="stat type-percentage even">
+							<h3>Great Commission Christians</h3>
+							<p class="number"></p>
+							<div class="progress-bar"></div>
+						</div>
+
+						<div title="A measure of new church members baptized per year, per million evangelism-hours expended per year. Higher values indicate greater responsiveness to evangelism, lowest values signify small or even zero response." id="Response" class="stat type-index odd">
+							<h3>Response to the Gospel</h3>
+							<p class="number"></p>
+						</div>
+
+						<div title="A scientific count producing numbers of concrete disciple-opportunities, invitations, chances to hear the gospel and become disciples of Christ. This is a per year/ per capita figure for the cited country." id="Offers" class="stat type-index even">
+							<h3>Offers of the Gospel</h3>
+							<p class="number"></p>
+						</div>
+
+						<div title="A province is designated as 'A' if less than 50% of its population is evangelized. It is designated 'B' if 50% or more of its population is evangelized and less than 60% Christian. It is designated 'C' if 60% or more of its population is Christian." id="World" class="stat type-index odd">
+							<h3>World ABC</h3>
+							<p class="number"></p>
+						</div>
+
+						<div title="An index calculating various spiritual needs fields with the population of the Omega Zone.  Fields factored are Affiliated Christians, Percent Evangelized, Great Commission Christians, Number of Christian Workers, Reponse to the Gospel, Offers of the Gospel, and World ABC class." id="SLNIxPop2" class="stat type-index even">
+							<h3>Spiritual Life Needs by Population</h3>
+							<p class="number"></p>
+						</div>
+
+						<div title="An index calculating various physical needs fields with the population of the Omega Zone.  Fields factored are Life Expectancy, Adult Literacy, Human Development Index, Human Suffering Index, Access to Clean Water, and Under Age 5 Mortality Rate." id="BLNIxPop2" class="stat type-index odd">
+							<h3>Basic Life Needs by Population</h3>
+							<p class="number"></p>
+						</div>
+
+						<div title="An index calculating the Spiritual and Basic Life needs together, then factoring in the population of the Omega Zone.  This index shows which Omega Zones require the most resources." id="THNIxPop4" class="stat type-index even">
+							<h3>Total Human Needs by Population</h3>
+							<p class="number"></p>
+						</div>
+
+						<script type="text/javascript">
+							window.statFields = ["Population","AdultPerce","Life_Expec","Adult_Lite","HDI","HSI","Access_Wat","Under_5_Mo","Christian_","Evangelize","GCC","Response","Offers","World","SLNIxPop2","BLNIxPop2","THNIxPop4"] ;
+						</script>
+
+				</div>
+
+				<div id="userdata">
+					<div class="addUserdataButton disabled">
+						<p>add</p>
+					</div>
+					<div id="userDataList" class="scrollable">
+						<p class="notice"></p>
+					</div>
+					<script type="text/template" id="panel-userdata-list-category">
+						<div class="category" id="category-<%=name.replace('/', '-')%>">
+							<p><%=name%></p>
+
+							<p class="arrow">&#9660;</p>
+							<p class="arrow" style="display:none;">&#9668;</p>
+						</div>
+					</script>
+					<script type="text/template" id="panel-userdata-list-item">
+						<div class="userdata category-<%=category.replace('/', '-')%>">
+							<div class="file-icon">
+								<%=type%>
+							</div>
+
+							<h2 class="truncate"><%= name %></h2>
+							<div id="rating-<%=id%>" class="rating">
+								<input type="radio" name="rating" value="1" <% if(rating == 1) {%>checked="checked"<%}%>/>
+								<input type="radio" name="rating" value="2" <% if(rating == 2) {%>checked="checked"<%}%>/>
+								<input type="radio" name="rating" value="3" <% if(rating == 3) {%>checked="checked"<%}%>/>
+								<input type="radio" name="rating" value="4" <% if(rating == 4) {%>checked="checked"<%}%>/>
+								<input type="radio" name="rating" value="5" <% if(rating == 5) {%>checked="checked"<%}%>/>
+							</div>
+
+							<div class="icon" style="background-image:url(groups/icon/<%=group_id%>);"></div>
+							<a target="_blank" href="<%= url %>" class="<% if(type == 'url') { %>url<% } else { %>file<%}%>"><% if(type == 'url') { %>Visit website <% } else { %>Download<% } %></a>
+							
+						</div>
+					</script>
+
+				</div>
+				<div id="userdataAdd">
+					<form id="userdataAddForm">
+						<div id="userdataAddTabs">
+							<ul>
+								<li><a id="userDataAddTabsFileButton" class="selected" style="border-left:none;">Upload file</a></li>
+								<li><a id="userDataAddTabsLinkButton" style="border-right:none;">Attach link</a></li>
+							</ul>
+							<div title="File has to be either doc, docx, kml, kmz or pdf." class="userdataAddTab" id="userDataAddTabsFile">
+								<div id="userdataFile"></div>
+							</div>
+							
+							<div class="userdataAddTab" style="display:none;" id="userDataAddTabsLink">
+								<label for="link">Link</label>
+								<input type="text" id="link" />
+							</div>
+						</div>
+
+						<div id="userdataAddNoTabs">
+							<input type="hidden" id="fileName" />
+							<input type="hidden" id="fileExt" />
+							<input type="hidden" id="fileSize" />
+						
+							<label for="name">Name</label>
+							<input type="text" id="name" />
+						
+							<label for="category">Category</label>
+							<select id="category">
+								<option value="General">General</option>
+								<option value="Family">Family</option>
+								<option value="Church/Religion">Church/Religion</option>
+								<option value="Government">Government</option>
+								<option value="Business/Science">Business/Science</option>
+								<option value="Education">Education</option>
+								<option value="Media">Media</option>
+								<option value="Celebration">Celebration</option>
+							</select>
+							
+							<label for="security">Security</label>
+							<select id="security">
+								<option value="public">This is public</option>
+								<option value="private">This is only for registered users</option>
+								<option value="group">This is only for my group</option>
+							</select>
+							
+							<br>
+							<button class="userdataAdd">add</button>
+							<div class="clear"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="map" class="tundra">
+				
+				<ul id="availableLayers">
+					<script type="text/template" id="layers-available-layer-template">
+						<li id="<%= layer_id %>-<%= sublayer_id %>">
+							<p><%=name%></p>
+							<button class="addLayerButton"></button>
+						</li>
+					</script>
+				</ul>
+				
+				<div id="layers">
+					<button class="showAvailableLayersButton">Add layer</button>
+				
+					<ul id="visibleLayers">
+						<script type="text/template" id="layers-visible-layer-template">
+							<li id="<%= layer_id %>-<%= sublayer_id %>" style="margin-left:-260;">
+								<p><%=name%></p>
+								<button class="removeLayer"></button>
+							</li>
+						</script>
+						<li id="baseLayer">
+							<p>
+								<a href="#" class="switchBasemap" id="layer0">Satellite</a> | 
+								<a href="#" class="switchBasemap" id="layer1">Terrain</a> | 
+								<a href="#" class="switchBasemap" id="layer2">Street</a>
+							</p>
+						</li>
+					</ul>
+				</div>
+				
+				<div id="reportContainer">
+					<a id="reportButton" class="reportButton" href="#">Report</a>
+					
+					<form id="report">
+						<h2>Report</h2>
+						<p>Please let us know of any abuse or bugs you find on the map.</p>
+						<label for="from">Your email</label>
+						<input type="email" name="from" />
+						<label for="from">Your message</label>
+						<textarea name="report"></textarea>
+						<input type="submit" value="Report" />
+						<a href="#" class="reportButton">Cancel</a>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div id="auth-wrapper">
+			<div class="mapButton"></div>
+			
+			<div id="auth">
+				<div class="title">
+					<h2>Login</h2>
+				</div>
+
+				<form id="login" method="POST">
+					<label for="username">Username</label>
+					<input type="text" id="username" name="data[User][username]" />
+					<label for="password">Password</label>
+					<input type="password" id="password" name="data[User][password]" />
+					<p><a class="registerButton" href="#">Sign up</a> | <a class="lostpasswordButton" href="#">Lost password</a></p>
+					<button class="white">Login</button>
+				</form>
+
+				<form id="register" method="POST">
+					<label for="username">Username</label>
+					<input type="text" id="username" />
+					
+					<label for="email">Email</label>
+					<input type="email" id="email" />
+					
+					<label for="organization">Organization</label>
+					<input type="text" id="organization" />
+					
+					<label for="password">Password</label>
+					<input type="password" id="password" />
+					
+					<label for="password2">Repeat password</label>
+					<input type="password" id="password2" />
+					
+					<p><a class="loginButton" href="#">Login</a> | <a class="lostpasswordButton" href="#">Lost password</a></p>
+					<button class="white">Register</button>
+				</form>
+				
+				<form id="lostpassword" method="POST">
+					<p>That's okay, it happens to the best of us. Enter your email here and we'll help you getting a new one.</p><br><br><br>
+					<label for="email">Email</label>
+					<input type="email" id="email" />
+				
+					<p><a class="loginButton" href="#">Login</a> | <a class="registerButton" href="#">Sign up</a></p>
+					<button class="white">Email me!</button>
+				</form>
+				
+				<form id="resetpassword" method="POST">
+					<p>Enter your new password here.</p><br><br>
+					
+					<input type="hidden" name="username" value="" id="username" />
+					<input type="hidden" name="ttl" value="" id="ttl" />
+					<input type="hidden" name="otp" value="" id="otp" />
+					
+					<label for="password">Password</label>
+					<input type="password" name="password" id="password" />
+					
+					<label for="password2">Comfirm</label>
+					<input type="password" name="password2" id="password2" />
+				
+					<p><a class="loginButton" href="#">Login</a> | <a class="registerButton" href="#">Sign up</a></p>
+					<button class="white">Reset!</button>
+				</form>
+			</div>
+		</div>
+		
+		<div id="backend-wrapper">
+			<div id="nav">
+				<ul>
+					<h3>My stuff</h3>
+					<li><a href="#" class="myGroupButton groupAdminRights">My group</a></li>
+					<li><a href="#" class="myGroupFilesButton inGroupRights">My group data</a></li>
+					<li><a href="#" class="myFilesButton inGroupRights">My data</a></li>
+					<li><a href="#" class="myProfileButton">My profile</a></li>
+				</ul>
+				
+				<ul class="adminRights">
+					<h3>Admin</h3>
+					<li><a href="#" class="groupsButton">Groups</a></li>
+					<li><a href="#" class="userdataButton">User data</a></li>
+					<li><a href="#" class="usersButton">Users</a></li>
+					<li><a href="#" class="fieldsButton">Fields</a></li>
+				</ul>
+				
+				<ul class="bottom">
+					<li><a href="#" class="mapButton">Back to map</a></li>
+					<li><a href="users/logout">Log out</a></li>
+				</ul>
+			</div>
+			
+			<div id="mystuff-wrapper">
+				<div id="myGroup" class="first-view">
+			        <div class="bar">
+			        	<h2 class="truncate" style="width:160px"></h2>
+			        	<button class="myGroupUserAdd groupAdminRights">add user</button>
+			        </div>
+			        <div class="content">
+			        	<p class="notice"></p>
+			        	<ul></ul>
+			
+			    		<script type="text/template" id="template-mygroup-user-list-item">
+		        			<li>
+		        				<a id="<%= id %>" class="changeUserMyGroupButton" href="#">
+		        					<%= name %>
+		        					<% if(level == 1) { %> <span class="description">Admin</span> <% } %>
+		        				</a>
+		        			</li>
+		        		</script>
+		    
+			        </div>
+				</div>
+				
+				<div id="myGroupUserAdd" style="height:400px" class="second-view">
+			        <div class="bar">
+			        	<h2>Add user to group</h2>
+			        </div>
+			        <div class="content">
+			        	<form id="myGroupAddUserForm" class="grey">
+			        		<input type="search" id="searchMyGroupUser" name="name" style="margin-bottom:0px;" />
+			        	</form>
+			        	<p class="notice"></p>
+			        	
+			        	<ul style="top:29px;"></ul>
+			
+			    		<script type="text/template" id="template-user-add-mygroup-list-item">
+		        			<li>
+		        				<a href="#" class="no-arrow">
+		        					<%= name %>
+		        					<button class="addUserMyGroupButton grey" id="<%= id %>">add</button>
+		        				</a>
+		        			</li>
+		        		</script>
+			        </div>
+				</div>
+				
+				<div id="changeUserMyGroup" style="height:200px" class="second-view">
+			        <div class="bar">
+			        	<h2 class="truncate">Change rights for </h2>
+			        </div>
+			        <div class="content">
+			        	<form id="changeUserMyGroupForm">
+			        		<input type="hidden" id="userId" />
+			        		<input type="hidden" id="groupUserId" />
+			        		
+			        		<label for="userLevel">User rights</label>
+			        		<select id="userLevel">
+			        			<option value="0">Normal</option>
+			        			<option value="1">Administrator</option>
+			        		</select>
+			        	</form>
+			        </div>
+			        <div class="bar bottom">
+			        	<button class="changeUserMyGroup">change</button>
+			        	<button class="deleteUserMyGroup grey" style="margin-left:0;">remove from group</button>
+			        </div>
+				</div>
+				
+				<div id="profile" class="first-view">
+					<div class="bar">
+						<h2 class="truncate"></h2>
+					</div>
+					<div class="content">
+						<div class="info">
+							<strong>Username:</strong><p id="UserViewUsername"></p>
+							<strong>Organization:</strong><p id="UserViewOrganization"></p>
+							<strong>Email:</strong><p><a class="selectable" href="#" id="UserViewEmail"></a></p>
+							<!-- <strong>Is in group:</strong><p id="UserViewInGroup"></p> -->
+							<strong>Member since:</strong><p id="UserViewCreated"></p>
+						</div>
+					</div>
+				</div>
+				
+				<div id="myGroupUserdata" class="first-view">
+					<div class="bar">
+						<h2>My group files</h2>
+					</div>
+					<div class="content">
+						<ul></ul>
+						
+						<script type="text/template" id="template-userdata-list-item">
+							<li>
+								<a href="#" id="<%= index %>" class="editMyUserdataButton group-<%=group_id%>">
+	        						<p id="<%= index %>" class="truncate"><%= name %></p>
+									<span class="description"><%= world_id %></span>
+								</a>
+							</li>
+						</script>
+						
+					</div>
+				</div>
+				
+				<div id="myUserdata" class="first-view">
+					<div class="bar">
+						<h2>My files</h2>
+					</div>
+					<div class="content">
+						<ul></ul>
+						
+						<script type="text/template" id="template-userdata-list-item">
+							<li>
+								<a href="#" id="<%= index %>" class="editMyUserdataButton group-<%=group_id%>">
+	        						<p id="<%= index %>" class="truncate"><%= name %></p>
+									<span class="description"><%= world_id %></span>
+								</a>
+							</li>
+						</script>
+						
+					</div>
+				</div>
+				
+				<div id="editMyUserdatum" class="second-view">
+					<div class="bar">
+						<h2 class="truncate"></h2>
+					</div>
+					<div class="content">
+						<div class="info">
+							<strong>Name:</strong><p id="UserdatumName"></p>
+							<strong>Category:</strong><p id="UserdatumCategory"></p>
+							<strong>Security:</strong><p id="UserdatumSecurity"></p>
+							<strong>World ID:</strong><p id="UserdatumWorldID"></p>
+							<strong>User:</strong><p id="UserdatumUser"></p>
+							<strong>Group:</strong><p id="UserdatumGroup"></p>
+							<strong>Uploaded:</strong><p id="UserdatumCreated"></p>
+							<strong>Type:</strong><p id="UserdatumType"></p>
+							<strong>File name:</strong><p id="UserdatumFileName"></p>
+							<strong>URL:</strong><p id="UserdatumURL"></p>
+						</div>
+						
+						<form class="groupAdminRights" id="editUserdatumForm">							
+							<label for="security">Security</label>
+							<select id="security">
+								<option value="public">This is public</option>
+								<option value="private">This is only for registered users</option>
+								<option value="group">This is only for my group</option>
+							</select>
+						</form>
+
+					</div>
+					<div class="bar bottom groupAdminRights">
+						<button class="editMyUserdatum">save</button>
+						<button class="deleteMyUserdatum grey">delete</button>
+					</div>
+				</div>
+				
+			</div>
+	
+			<div id="groups-wrapper">
+				
+				<div id="groups" class="first-view">
+			        <div class="bar">
+			        	<h2 style="width:200px;">Groups</h2>
+			        	<button class="addGroupButton">add</button>
+			        </div>
+			        <div class="content">
+			        	<p class="notice"></p>
+			        	
+			        	<ul>
+			        	</ul>
+			    		<script type="text/template" id="template-group-list-item">
+		        			<li>
+								<a href="#" id="<%= index %>" class="viewGroupButton">
+									<%= name %>
+									<div class="icon" style="background-image:url(groups/icon/<%=id%>);"></div>
+								</a>
+							</li>
+		        		</script>
+		    
+			        </div>
+				</div>
+			
+				<div id="group" class="second-view">
+			        <div class="bar">
+			        	<h2 class="truncate" style="width:160px"></h2>
+			        	<button class="groupUserAdd">add user</button>
+			        </div>
+			        <div class="content">
+			        	<p class="notice"></p>
+			        	<ul></ul>
+			
+			    		<script type="text/template" id="template-group-user-list-item">
+		        			<li>
+		        				<a id="<%= id %>" class="changeUserGroupButton" href="#">
+		        					<%= name %> 
+		        					<% if(level == 1) { %> <span class="description">Admin</span> <% } %>
+		        				</a>
+		        			</li>
+		        		</script>
+		    
+			        </div>
+			        <div class="bar bottom">
+						<button class="deleteGroupButton grey">delete</button>
+			        </div>
+				</div>
+			
+				<div id="groupUserAdd" style="height:400px" class="third-view">
+			        <div class="bar">
+			        	<h2>Add user to group</h2>
+			        </div>
+			        <div class="content">
+			        	<form id="groupAddUserForm" class="grey">
+			        		<input type="search" id="searchGroupUser" name="name" style="margin-bottom:0px;" />
+			        	</form>
+			        	<p class="notice"></p>
+			        	
+			        	<ul style="top:29px;"></ul>			
+			
+			    		<script type="text/template" id="template-user-add-list-item">
+		        			<li>
+		        				<a href="#" class="no-arrow">
+		        					<%= name %>
+		        					<button class="addUserGroupButton grey" id="<%= id %>">add</button>
+		        				</a>
+		        			</li>
+		        		</script>
+			        </div>
+				</div>
+			
+				<div id="changeUserGroup" style="height:200px" class="third-view">
+			        <div class="bar">
+			        	<h2 class="truncate">Change rights for </h2>
+			        </div>
+			        <div class="content">
+			        	<form id="changeUserGroupForm">
+			        		<input type="hidden" id="userId" />
+			        		<input type="hidden" id="groupUserId" />
+			        		
+			        		<label for="userLevel">User rights</label>
+			        		<select id="userLevel">
+			        			<option value="0">Normal</option>
+			        			<option value="1">Administrator</option>
+			        		</select>
+			        	</form>
+			        </div>
+			        <div class="bar bottom">
+			        	<button class="changeUserGroup">change</button>
+			        	<button class="deleteUserMyGroup grey" style="margin-left:0;">remove from group</button>
+			        </div>
+				</div>
+			
+				<div id="groupAdd" style="height:300px" class="second-view">
+			        <div class="bar">
+			        	<h2>Add group</h2>
+			        </div>
+			        <div class="content">
+			        	<form id="groupAddForm">
+			        		<label for="groupName">Group name</label>
+			        		<input type="text" id="groupName" name="name" />
+				
+							<label>Upload group icon</label>
+							<div id="groupIconFile"></div>
+
+							<input type="hidden" id="fileName" />
+							<input type="hidden" id="fileExt" />
+			        	</form>
+			        </div>
+			        <div class="bar bottom">
+			        	<button class="groupAdd">add</button>
+			        </div>
+				</div>
+				
+				<div id="groupEdit" style="height:300px" class="third-view">
+			        <div class="bar">
+			        	<h2 class="truncate"></h2>
+			        </div>
+			        <div class="content">
+			        	<form id="groupEditForm">
+							<input type="hidden" id="id" name="id" />
+				
+			        		<label for="groupName">Group name</label>
+			        		<input type="text" id="groupName" name="name" />
+				
+							<label>Upload group icon</label>
+							<div id="newGroupIconFile"></div>
+
+							<input type="hidden" id="fileName" />
+							<input type="hidden" id="fileExt" />
+			        	</form>
+			        </div>
+			        <div class="bar bottom">
+			        	<button class="editGroup">save</button>
+						<button class="deleteGroup grey">delete</button>
+			        </div>
+				</div>
+			</div>
+		
+			<div id="userdata-wrapper">
+				<div id="userdata" class="first-view">
+					<div class="bar">
+						<h2>User data</h2>
+					</div>
+					<div class="content">
+						<ul></ul>
+						
+						<script type="text/template" id="template-userdata-list-item">
+							<li>
+								<a href="#" id="<%= index %>" class="editUserdataButton group-<%=group_id%>">
+									<p class="truncated" id="<%= index %>"><%= name %></p>
+									<span class="description"><%= world_id %></span>
+								</a>
+							</li>
+						</script>
+						<script type="text/template" id="template-userdata-list-group">
+							<div class="group" id="group-<%=id %>">
+								<p><%=name%></p>
+
+								<p class="arrow">&#9660;</p>
+								<p class="arrow" style="display:none;">&#9668;</p>
+							</div>
+						</script>
+						
+					</div>
+				</div>
+				
+				<div id="editUserdatum" class="second-view">
+					<div class="bar">
+						<h2 class="truncate"></h2>
+					</div>
+					<div class="content">
+						<div class="info">
+							<strong>Name:</strong><p id="UserdatumName"></p>
+							<strong>Category:</strong><p id="UserdatumCategory"></p>
+							<strong>Security:</strong><p id="UserdatumSecurity"></p>
+							<strong>World ID:</strong><p id="UserdatumWorldID"></p>
+							<strong>User:</strong><p id="UserdatumUser"></p>
+							<strong>Group:</strong><p id="UserdatumGroup"></p>
+							<strong>Uploaded:</strong><p id="UserdatumCreated"></p>
+							<strong>Type:</strong><p id="UserdatumType"></p>
+							<strong>File name:</strong><p id="UserdatumFileName"></p>
+							<strong>URL:</strong><p id="UserdatumURL"></p>
+						</div>
+						
+						<form id="editUserdatumForm">							
+							<label for="security">Security</label>
+							<select id="security">
+								<option value="public">This is public</option>
+								<option value="private">This is only for registered users</option>
+								<option value="group">This is only for my group</option>
+							</select>
+							
+						</form>
+					</div>
+					<div class="bar bottom">
+						<button class="editUserdatum">save</button>
+						<button class="deleteUserdatum grey">delete</button>
+					</div>
+					
+				</div>
+				
+			</div>
+		
+			<div id="users-wrapper">
+				<div id="users" class="first-view">
+					<div class="bar">
+						<h2>Users</h2>
+					</div>
+					<div class="content">
+						<ul></ul>
+						
+						<script type="text/template" id="template-user-list-item">
+							<li>
+								<a href="#" id="<%= index %>" class="viewUserButton">
+									<%= name %>
+									<% if(level == 1) { %> <span class="description">Super user</span> <% } %>
+								</a>
+							</li>
+						</script>
+						
+					</div>
+				</div>
+				
+				<div id="user" class="second-view">
+					<div class="bar">
+						<h2 class="truncate"></h2>
+					</div>
+					<div class="content">
+						<div class="info">
+							<strong>Username:</strong><p id="UserViewUsername"></p>
+							<strong>Organization:</strong><p id="UserViewOrganization"></p>
+							<strong>Email:</strong><p><a class="selectable" href="#" id="UserViewEmail"></a></p>
+							<strong>Is in group:</strong><p id="UserViewInGroup"></p>
+							<strong>Level:</strong><p id="UserViewLevel"></p>
+							<strong>Member since:</strong><p id="UserViewCreated"></p>
+						</div>
+						
+						<form class="userEditForm">
+			        		<label for="userLevel">User rights</label>
+			        		<select id="userLevel">
+			        			<option value="0">Mere mortal</option>
+			        			<option value="1">Super user</option>
+			        		</select>
+						</form>
+					</div>
+					<div class="bar bottom">
+						<button class="userDelete grey">delete</button>
+						<button class="userEdit">save</button>
+					</div>
+				</div>
+				
+				<script type="text/javascript">$(document).ready(function(){$('#user #userLevel').change(function(){if($(this).val()==1){$('#superman').fadeIn();$('#superman').css({right:window.innerWidth+450,top:window.innerHeight+338});$('#superman').animate({right:-450,top:-338},1500,function(){$('#superman').hide();});$('#superman').click(function(){$('#superman').stop();});$('#superman').dblclick(function(){$('#superman').fadeOut();});}});});</script><div id="superman" style="width:450px;display:none;height:338;position:absolute;z-index:1000;background-image:url(img/superman.png);"></div>
+			</div>
+				
+			<div id="fields-wrapper">
+						<div id="fields" class="first-view">
+							<div class="bar">
+								<h2 style="width:200px">Stat fields</h2>
+								<button class="addFieldButton">add</button>
+							</div>
+							<div class="content">
+								<ul></ul>
+								<script type="text/template" id="template-field-list-item">
+									<li>
+										<a href="#" id="<%= index %>" class="editFieldButton"><%= name %></a>
+									</li>
+								</script>
+								
+							</div>
+						</div>
+						
+						<div id="editField" class="second-view">
+							<div class="bar">
+								<h2>Add field</h2>
+							</div>
+							<div class="content">
+								<form id="editFieldForm">
+									<label for="name">Name</label>
+									<input type="text" id="name" />
+									
+									<label for="fieldName">GIS Field name</label>
+									<input type="text" id="fieldName" />
+									
+									<label for="description">Description</label>
+									<textarea id="description"></textarea>
+									
+									<label for="type">Type</label>
+									<select id="type">
+										<option value="number">Number</option>
+										<option value="percentage">Percentage</option>
+										<option value="rate">Rate</option>
+										<option value="index">Index</option>
+									</select>
+									
+									<label for="rate">Rate</label>
+									<input type="text" id="rate" />
+								</form>
+							</div>
+							<div class="bar bottom">
+								<button class="editField">save</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
